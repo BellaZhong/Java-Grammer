@@ -1,0 +1,125 @@
+CallBack Functions:
+# if Class A wants to call a C() in Class B, while at the same time B is referenced in Class A, C() is called a callback function.
+
+Eg:
+
+
+
+
+//这个是View的一个回调接口
+/**
+ * Interface definition for a callback to be invoked when a view is clicked.
+ */
+public interface OnClickListener {
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    void onClick(View v);
+}
+
+
+
+
+package com.example.demoactivity;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Toast;
+
+/**
+ * 这个就相当于Class A
+ * @author xiaanming
+ * 实现了 OnClickListener接口---->背景一
+ */
+public class MainActivity extends Activity implements OnClickListener{
+	/**
+	 * Class A 包含Class B的引用----->背景二
+	 */
+	private Button button;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		button = (Button)findViewById(R.id.button1);
+		
+		/**
+		 * Class A 调用View的方法,而Button extends View----->A类调用B类的某个方法 C
+		 */
+		button.setOnClickListener(this);
+	}
+
+	/**
+	 * 用户点击Button时调用的回调函数，你可以做你要做的事
+	 * 这里我做的是用Toast提示OnClick
+	 */
+	@Override
+	public void onClick(View v) {
+		Toast.makeText(getApplication(), "OnClick", Toast.LENGTH_LONG).show();
+	}
+
+}
+
+
+
+/**
+ * 这个View就相当于B类
+ * @author xiaanming
+ *
+ */
+public class View implements Drawable.Callback, KeyEvent.Callback, AccessibilityEventSource {
+	/**
+     * Listener used to dispatch click events.
+     * This field should be made private, so it is hidden from the SDK.
+     * {@hide}
+     */
+    protected OnClickListener mOnClickListener;
+    
+    /**
+     * setOnClickListener()的参数是OnClickListener接口------>背景三
+     * Register a callback to be invoked when this view is clicked. If this view is not
+     * clickable, it becomes clickable.
+     *
+     * @param l The callback that will run
+     *
+     * @see #setClickable(boolean)
+     */
+    
+    public void setOnClickListener(OnClickListener l) {
+        if (!isClickable()) {
+            setClickable(true);
+        }
+        mOnClickListener = l;
+    }
+    
+    
+    /**
+     * Call this view's OnClickListener, if it is defined.
+     *
+     * @return True there was an assigned OnClickListener that was called, false
+     *         otherwise is returned.
+     */
+    public boolean performClick() {
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
+
+        if (mOnClickListener != null) {
+            playSoundEffect(SoundEffectConstants.CLICK);
+            
+            //这个不就是相当于B类调用A类的某个方法D，这个D就是所谓的回调方法咯
+            mOnClickListener.onClick(this);
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
+# Class A has a function a(), but it doesn't know when to call it. Class B knows when to call it, but it doesn't know what to do in function a().
+# So B calls a(), A tells a() what to do.
+
