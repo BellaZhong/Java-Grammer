@@ -123,3 +123,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
 # Class A has a function a(), but it doesn't know when to call it. Class B knows when to call it, but it doesn't know what to do in function a().
 # So B calls a(), A tells a() what to do.
 
+There're lots of methods in Java are callback functions, such as onClick(), runnable().
+When a method in an interface is a callback function, it needs to be overrided in Class A.
+
