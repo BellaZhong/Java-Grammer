@@ -1,0 +1,21 @@
+runOnUiThread  &  Handler  Difference and Relatives.
+
+Handler, Looper, MessageQueue, Thread are Asyn communication methods in Android.
+They're similar to MsBox in uC/OS-II. Android rules that UI can't be changed outside from the main UI Thread.
+So when there's a need to change the UI in sub-threads, we need to pass the messages back to main UI Thread, so the UI will be changed in main Thread.
+
+
+Define a Handler in a class, and override the run methods to post the messages to the main Thread. Under default circumstances, the Handler will be bound to 
+the Looper of the class which defined the Handler. Otherwise, the Handler will specifically be assigned to a certain Looper.
+
+Looper is the bridge to connect Handler and MessageQueue.
+A class has only one Looper.
+A Looper can have multiple Handlers.
+A Handler belongs to only one Looper.
+
+
+A Handler can be attached to any Looper.
+But runOnUiThread will only be bound to the main UI Thread.
+
+So a Handler can post messages to any threads.
+But runOnUiThread will only post messages to the main UI Thread to change UI.
